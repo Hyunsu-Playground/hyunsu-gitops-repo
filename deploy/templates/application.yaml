@@ -1,25 +1,34 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: monero-miner
-  namespace: xmrig
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
+  name: hyunsu-applications
+  namespace: argocd
+  labels:
+    layer: applications
 spec:
   generators:
     - list:
         elements:
           - cluster: in-cluster
             url: https://kubernetes.default.svc
-  destination:
-    namespace: xmrig
-    name: in-cluster
-  project: hyunsu-application
-  source:
-    path: charts/monero-miner
-    repoURL: https://github.com/Hyunsu-Playground/hyunsu-gitops-repo.git
-    targetRevision: main
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
+  template:
+    metadata:
+      name: 'monero-miner'
+      labels:
+        layer: environment
+    spec:
+      project: hyunsu-applicaition
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: argocd
+      source:
+        path: charts/monero-miner
+        repoURL: https://github.com/Hyunsu-Playground/hyunsu-gitops-repo.git
+        targetRevision: HEAD
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - Createnamespace=true
+          - "--creds=argocd-ecr-secret"
