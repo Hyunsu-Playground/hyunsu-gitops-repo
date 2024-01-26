@@ -1,3 +1,8 @@
+{{- $destination := "https://kubernetes.default.svc" }}
+{{- $repository := "https://github.com/Hyunsu-Playground/hyunsu-gitops-repo.git" }}
+{{- $project := "hyunsu-application" }}
+{{- $namespace := "hyunsu" }}
+
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
@@ -17,14 +22,27 @@ spec:
       labels:
         layer: environment
     spec:
-      project: hyunsu-applicaition
+      project: {{ $project }}
       destination:
-        server: https://kubernetes.default.svc
-        namespace: argocd
+        server: {{ $destination }}
+        namespace: {{ $namespace }}
       source:
         path: charts/monero-miner
-        repoURL: https://github.com/Hyunsu-Playground/hyunsu-gitops-repo.git
+        repoURL: {{ $repository }}
         targetRevision: HEAD
+        helm:
+          values:
+            {{- $map :=
+              (dict "spec"
+                (dict
+                "project" $project
+                "destination"
+                  (dict "server" $destination)
+                "source"
+                  (dict "serverPath" "charts/server" "repoURL" $repository "targetRevision" "HEAD")
+                )
+              )
+            }}
       syncPolicy:
         automated:
           prune: true
