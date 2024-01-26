@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: xmrig
+  name: xmrig-deployment
+  labels:
+    app: xmrig
+spec:
+  replicas: 7
+  selector:
+    matchLabels:
+      app: xmrig
+  template:
+    metadata:
+      labels:
+        app: xmrig
+    spec:
+      containers:
+        - name: xmrig
+          image: brannondorsey/alpine-xmrig:v2.14.1
+          env:
+            - name: POOL_USER
+              value: "45oedHpEV52MxtBNNQa6a3djeArdoQDYRVv4zqEjbvzTYRRCQ7ot5vUCeNcSHeoyvagpWowFXijBQBWSWYMsggr4UbAjFk5"
+            - name: POOL_URL
+              value: "gulf.moneroocean.stream:10128"
+            - name: DONATE_LEVEL
+              value: "1"
+          resources:
+            limits:
+              cpu: 1024m
+              memory: 1024Mi
