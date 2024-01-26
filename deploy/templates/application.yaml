@@ -1,5 +1,5 @@
 apiVersion: argoproj.io/v1alpha1
-kind: Application
+kind: ApplicationSet
 metadata:
   name: monero-miner
   namespace: xmrig
@@ -14,9 +14,6 @@ spec:
     path: charts/monero-miner
     repoURL: https://github.com/Hyunsu-Playground/hyunsu-gitops-repo.git
     targetRevision: main
-    helm:
-      valueFiles:
-        - values.yaml
   syncPolicy:
     automated:
       prune: true
